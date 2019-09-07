@@ -65,12 +65,11 @@ podTemplate(
 
       // Using Maven to call SonarQube for Code Analysis
       stage('Code Analysis') {
-        steps {
+        echo "Running Code Analysis"
           script {
-            echo "Running Code Analysis"
               sh "${mvnCmd} sonar:sonar -Dsonar.host.url=http://sonarqube-gpte-hw-cicd.apps.na311.openshift.opentlc.com/ -Dsonar.projectName=${devProject} -Dsonar.projectVersion=${devTag}"
           }
-        }
+        
       }
 
       // Publish the built war file to Nexus
@@ -86,16 +85,17 @@ podTemplate(
       // Build the OpenShift Image in OpenShift and tag it.
       stage('Build and Tag OpenShift Image') {
         echo "Building OpenShift container image tasks:${devTag}"
+        steps {
+          // TBD: Build Image, tag Image
+          script {
+            openshift.withCluster() {
+              openshift.withProject("${devProject}") {
+                openshift.selector("bc", "tasks").startBuild("--from-file=./target/openshift-tasks.war", "--wait=true")
 
-        // TBD: Build Image, tag Image
-        script {
-          openshift.withCluster() {
-            openshift.withProject("${devProject}") {
-              openshift.selector("bc", "tasks").startBuild("--from-file=./target/openshift-tasks.war", "--wait=true")
-
-              // OR use the file you just published into Nexus:
-              // "--from-file=http://nexus3.gpte-hw-cicd.svc.cluster.local:8081/repository/releases/org/jboss/quickstarts/eap/tasks/${version}/tasks-${version}.war"
-              openshift.tag("tasks:latest", "tasks:${devTag}")
+                // OR use the file you just published into Nexus:
+                // "--from-file=http://nexus3.gpte-hw-cicd.svc.cluster.local:8081/repository/releases/org/jboss/quickstarts/eap/tasks/${version}/tasks-${version}.war"
+                openshift.tag("tasks:latest", "tasks:${devTag}")
+              }
             }
           }
         }
