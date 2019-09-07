@@ -97,7 +97,6 @@ podTemplate(
 
       // Deploy the built image to the Development Environment.
       stage('Deploy to Dev') {
-        steps {
         echo "Deploying container image to Development Project"
 
         // TBD: Deploy to development Project
@@ -134,7 +133,6 @@ podTemplate(
               }
             }
           }
-        }
       }
 
       // Copy Image to Nexus container registry
