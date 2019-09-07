@@ -161,7 +161,6 @@ podTemplate(
         //      Set Image, Set VERSION
         //      Deploy into the other application
         //      Make sure the application is running and ready before proceeding
-        steps {
           echo "Blue/Green Deployment"
           script {
             openshift.withCluster() {
@@ -201,21 +200,18 @@ podTemplate(
               }
             }
           }
-        }
       }
 
       stage('Switch over to new Version') {
-        steps {
-          input "Switch Production?"
+        input "Switch Production?"
 
-          echo "Switching Production application to ${destApp}."
-          script {
-            openshift.withCluster() {
-              openshift.withProject("${prodProject}") {
-                def route = openshift.selector("route/tasks").object()
-                route.spec.to.name="${destApp}"
-                openshift.apply(route)
-              }
+        echo "Switching Production application to ${destApp}."
+        script {
+          openshift.withCluster() {
+            openshift.withProject("${prodProject}") {
+              def route = openshift.selector("route/tasks").object()
+              route.spec.to.name="${destApp}"
+              openshift.apply(route)
             }
           }
         }
