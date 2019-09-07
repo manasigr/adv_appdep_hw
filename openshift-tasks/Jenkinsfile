@@ -172,8 +172,8 @@ podTemplate(
                 echo "Active Application:      " + activeApp
                 echo "Destination Application: " + destApp
                 //fix env
-                sh "oc set env dc/tasks-blue VERSION='0.0 (tasks-blue)' -n ${GUID}-tasks-prod"
-                sh "oc set env dc/tasks-green VERSION='0.0 (tasks-green)' -n ${GUID}-tasks-prod"
+                sh "oc set env dc/tasks-blue VERSION='${prodTag}  (tasks-blue)' -n ${GUID}-tasks-prod"
+                sh "oc set env dc/tasks-green VERSION='${prodTag}  (tasks-green)' -n ${GUID}-tasks-prod"
 
                 sh "oc patch -n ${GUID}-tasks-prod dc tasks-blue --patch='{"spec":{"template":{"spec":{"containers":[{"name":"tasks-blue","resources":{"limits":{"cpu":"1","memory":"1356Mi"},"requests":{"cpu":"1","memory":"1356Mi"}}}]}}}}'"
                 sh "oc patch -n ${GUID}-tasks-prod dc tasks-green --patch='{"spec":{"template":{"spec":{"containers":[{"name":"tasks-green","resources":{"limits":{"cpu":"1","memory":"1356Mi"},"requests":{"cpu":"1","memory":"1356Mi"}}}]}}}}'"
