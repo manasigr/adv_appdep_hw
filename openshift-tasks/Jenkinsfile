@@ -81,9 +81,7 @@ podTemplate(
 
       // Build the OpenShift Image in OpenShift and tag it.
       stage('Build and Tag OpenShift Image') {
-        echo "Building OpenShift container image tasks:${devTag}"
-        steps {
-          // TBD: Build Image, tag Image
+        echo "Building OpenShift container image tasks:${devTag}"          // TBD: Build Image, tag Image
           script {
             openshift.withCluster() {
               openshift.withProject("${devProject}") {
@@ -95,7 +93,6 @@ podTemplate(
               }
             }
           }
-        }
       }
 
       // Deploy the built image to the Development Environment.
