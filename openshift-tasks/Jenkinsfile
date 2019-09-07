@@ -171,7 +171,9 @@ podTemplate(
                 }
                 echo "Active Application:      " + activeApp
                 echo "Destination Application: " + destApp
-
+                //fix env
+                sh "oc set env dc/tasks-blue VERSION='0.0 (tasks-blue)' -n ${GUID}-tasks-prod"
+                sh "oc set env dc/tasks-green VERSION='0.0 (tasks-green)' -n ${GUID}-tasks-prod"
                 // Update the Image on the Production Deployment Config
                 def dc = openshift.selector("dc/${destApp}").object()
 
@@ -182,8 +184,7 @@ podTemplate(
                 // Update Config Map in change config files changed in the source
                 openshift.selector("configmap", "${destApp}-config").delete()
                 def configmap = openshift.create("configmap", "${destApp}-config", "--from-file=./configuration/application-users.properties", "--from-file=./configuration/application-roles.properties" )
-                sh "oc set env dc/tasks-blue VERSION='0.0 (tasks-blue)' -n ${GUID}-tasks-prod"
-                sh "oc set env dc/tasks-green VERSION='0.0 (tasks-green)' -n ${GUID}-tasks-prod"
+                
 
                 // Deploy the inactive application.
                 openshift.selector("dc", "${destApp}").rollout().latest();
