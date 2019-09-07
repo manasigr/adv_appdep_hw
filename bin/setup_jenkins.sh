@@ -41,6 +41,9 @@ items:
     strategy:
       type: "JenkinsPipeline"
       jenkinsPipelineStrategy:
+        env:
+          - name: GUID
+            value: ${GUID}
         jenkinsfilePath: Jenkinsfile
 kind: List
 metadata: []" | oc create -f - -n ${GUID}-jenkins
