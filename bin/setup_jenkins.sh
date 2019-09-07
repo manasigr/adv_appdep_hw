@@ -22,10 +22,11 @@ oc set resources dc jenkins --limits=memory=2Gi,cpu=2 --requests=memory=1Gi,cpu=
 oc new-build -D $'FROM docker.io/openshift/jenkins-agent-maven-35-centos7:v3.11\n
       USER root\nRUN yum -y install skopeo && yum clean all\n
       USER 1001' --name=jenkins-agent-appdev -n ${GUID}-jenkins
-oc get is
+
 
 # Create pipeline build config pointing to the ${REPO} with contextDir `openshift-tasks`
 # TBD
+oc new-build --name=tasks-pipeline -n ${GUID}-jenkins --type=pipeline --contextDir="openshift-tasks" --git=$REPO}
 
 # Make sure that Jenkins is fully up and running before proceeding!
 while : ; do
