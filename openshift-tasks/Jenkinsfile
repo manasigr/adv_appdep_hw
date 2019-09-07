@@ -182,8 +182,8 @@ podTemplate(
                 // Update Config Map in change config files changed in the source
                 openshift.selector("configmap", "${destApp}-config").delete()
                 def configmap = openshift.create("configmap", "${destApp}-config", "--from-file=./configuration/application-users.properties", "--from-file=./configuration/application-roles.properties" )
-
-                sh "oc set env dc/${destApp} VERSION='0.0 (${destApp})' -n ${prodProject}"
+                sh "oc set env dc/tasks-blue VERSION='0.0 (tasks-blue)' -n ${GUID}-tasks-prod"
+                sh "oc set env dc/tasks-green VERSION='0.0 (tasks-green)' -n ${GUID}-tasks-prod"
 
                 // Deploy the inactive application.
                 openshift.selector("dc", "${destApp}").rollout().latest();
