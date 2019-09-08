@@ -114,8 +114,6 @@ podTemplate(
                 def configmap = openshift.create('configmap', 'tasks-config', '--from-file=./configuration/application-users.properties', '--from-file=./configuration/application-roles.properties' )
                 
                 sh "oc set env dc/tasks VERSION='${devTag} (tasks-dev)' -n ${devProject}"
-                //sh "oc patch -n ${GUID}-tasks-dev dc tasks --patch='{"spec":{"template":{"spec":{"containers":[{"name":"tasks","resources":{"limits":{"cpu":"1","memory":"1356Mi"},"requests":{"cpu":"1","memory":"1356Mi"}}}]}}}}'"
-
 
                 // Deploy the development application.
                 openshift.selector("dc", "tasks").rollout().latest();
@@ -186,9 +184,6 @@ podTemplate(
                 openshift.selector("configmap", "${destApp}-config").delete()
                 def configmap = openshift.create("configmap", "${destApp}-config", "--from-file=./configuration/application-users.properties", "--from-file=./configuration/application-roles.properties" )
                 
-                //sh "oc patch -n ${GUID}-tasks-prod dc tasks-blue --patch='{"spec":{"template":{"spec":{"containers":[{"name":"tasks-blue","resources":{"limits":{"cpu":"1","memory":"1356Mi"},"requests":{"cpu":"1","memory":"1356Mi"}}}]}}}}'"
-                //sh "oc patch -n ${GUID}-tasks-prod dc tasks-green --patch='{"spec":{"template":{"spec":{"containers":[{"name":"tasks-green","resources":{"limits":{"cpu":"1","memory":"1356Mi"},"requests":{"cpu":"1","memory":"1356Mi"}}}]}}}}'"
-
 
                 // Deploy the inactive application.
                 openshift.selector("dc", "${destApp}").rollout().latest();
