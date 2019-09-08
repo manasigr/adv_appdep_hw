@@ -172,8 +172,8 @@ podTemplate(
                 echo "Active Application:      " + activeApp
                 echo "Destination Application: " + destApp
                 //fix env
-                sh "oc set env dc/tasks-blue VERSION='${prodTag}  (tasks-blue)' -n ${GUID}-tasks-prod"
-                sh "oc set env dc/tasks-green VERSION='${prodTag}  (tasks-green)' -n ${GUID}-tasks-prod"
+                sh "oc set env dc/tasks-blue VERSION='${prodTag}  (tasks-blue)' -n ${prodProject}"
+                sh "oc set env dc/tasks-green VERSION='${prodTag}  (tasks-green)' -n ${prodProject}"
 
                 // Update the Image on the Production Deployment Config
                 def dc = openshift.selector("dc/${destApp}").object()
@@ -186,8 +186,8 @@ podTemplate(
                 openshift.selector("configmap", "${destApp}-config").delete()
                 def configmap = openshift.create("configmap", "${destApp}-config", "--from-file=./configuration/application-users.properties", "--from-file=./configuration/application-roles.properties" )
                 
-                sh "oc patch -n ${GUID}-tasks-prod dc tasks-blue --patch='{"spec":{"template":{"spec":{"containers":[{"name":"tasks-blue","resources":{"limits":{"cpu":"1","memory":"1356Mi"},"requests":{"cpu":"1","memory":"1356Mi"}}}]}}}}'"
-                sh "oc patch -n ${GUID}-tasks-prod dc tasks-green --patch='{"spec":{"template":{"spec":{"containers":[{"name":"tasks-green","resources":{"limits":{"cpu":"1","memory":"1356Mi"},"requests":{"cpu":"1","memory":"1356Mi"}}}]}}}}'"
+                //sh "oc patch -n ${GUID}-tasks-prod dc tasks-blue --patch='{"spec":{"template":{"spec":{"containers":[{"name":"tasks-blue","resources":{"limits":{"cpu":"1","memory":"1356Mi"},"requests":{"cpu":"1","memory":"1356Mi"}}}]}}}}'"
+                //sh "oc patch -n ${GUID}-tasks-prod dc tasks-green --patch='{"spec":{"template":{"spec":{"containers":[{"name":"tasks-green","resources":{"limits":{"cpu":"1","memory":"1356Mi"},"requests":{"cpu":"1","memory":"1356Mi"}}}]}}}}'"
 
 
                 // Deploy the inactive application.
@@ -208,7 +208,7 @@ podTemplate(
       }
 
       stage('Switch over to new Version') {
-        input "Switch Production?"
+        //input "Switch Production?"
 
         echo "Switching Production application to ${destApp}."
         script {
